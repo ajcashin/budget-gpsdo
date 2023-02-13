@@ -20,11 +20,16 @@ This is a working project. Included here (when I get around to it) will be the c
 Although the design uses low cost components, it should translate to a high performance design by using a timer grade GPS module and a higher specification OCXO. The software is self calibrating so no changes would be needed.
 
 Files:
-Main.asm - the software written in PIC assembler. Read SettingUpMPLAB.pdf to create the .hex file
-SettingUpMPLAB.pdf - setting up MPLAB X V5.35 (the last version to support MPASM)
-Software.pdf - an overview of how the software works
+Main.asm - the software written in PIC assembler. Read SettingUpMPLAB.pdf to create the .hex file.
+
+SettingUpMPLAB.pdf - setting up MPLAB X V5.35 (the last version to support MPASM).
+
+Software.pdf - an overview of how the software works.
+
 GPSDO-2023-02-12_163841.zip - KiCad 6.0 files with schematic and PCB layout
+
 Circuit.png - a printout of the schematic from KiCad 6.0 (to save you having to set it up)
+
 GPSDOnotesV1.pdf - notes about commissioning and running the GPSDO
 
 Notes: The schematic (and therefore the PCB) has a few optional bits.
