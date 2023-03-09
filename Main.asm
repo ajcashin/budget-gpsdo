@@ -1639,40 +1639,54 @@ TVnewV:
 	BTFSS	SUediff+3,7
 	BRA	PickFast
 ; slow deviation larger
-	CALL	Push3
-	data	SUslowE+1
-	BRA	GotPick
+	CALL	PushLit ; complement the -ve
+	data	0
+	CALL	Push4
+	data	SUslowE
+	CALL	subtract
+	CALL	PushLit
+	data	0x80 ; round up
+	CALL	addm
+	CALL	Pop4
+	data	SUediff
+	ASRF	SUediff+3,F ; ignoring the fraction
+	RRF	SUediff+2,F
+	RRF	SUediff+1,F
+	CLRF	SUediff
+	CALL	PushLit ; complement input
+	data	0
+	CALL	Push4
+	data	SUediff
+	CALL	subtract
+	CALL	Pop4
+	data	SUediff
+	BRA	TVcalcV
+	
 PickFast:
 ; calculate a voltage closer to the desired voltage
 ; check the error is 1 or more
-	CALL	Push3
-	data	SUfastE+1 ; ignore the fraction part	
-GotPick:
-; halve the error and calculate a new voltage
-	CALL	Pop3
+	CALL	Push4
+	data	SUfastE
+	CALL	PushLit
+	data	0x80 ; round up
+	CALL	addm
+; halve the error
+	CALL	Pop4
 	data	SUediff
-	MOVF	SUediff,W   ; fix rounding error problem
-	XORLW	0xFD	    ;
-	MOVLW	0xFE	    ;
-	BTFSC	STATUS,Z    ;
-	MOVWF	SUediff	    ;
-;	CALL	Print1H
-;	data	SUediff+2 ## DEBUG - multiple of 0.25Hz
-;	CALL	Print2H
-;	data	SUediff
-	ASRF	SUediff+2,F
+	ASRF	SUediff+3,F ; ignoring the fraction
+	RRF	SUediff+2,F
 	RRF	SUediff+1,F
-	RRF	SUediff,F
 	
 	
 TVcalcV:
+; calculate a new voltage
 ; log the result
 ;	CALL	Print1H
 ;	data	SUediff+2 ## DEBUG - multiple of 0.25Hz
 ;	CALL	Print2H
 ;	data	SUediff
 	CALL	Push3
-	data	SUediff
+	data	SUediff+1
 	CALL	Push4
 	data	SUslope
 	CALL	multiply
@@ -1704,16 +1718,16 @@ MoreVals:
 	BTFSS	STATUS,Z ; was slow last?
 	BRA	TVnextS
 	MOVLW	0x01
+	MOVWF	SUediff+1
 	CLRF	SUediff+2
-	CLRF	SUediff+1
-	MOVWF	SUediff
+	CLRF	SUediff+3
 	BRA	TVcalcV
 TVnextS:	
 ; fast was last, make it slow (-1)
 	MOVLW	0xFF
-	MOVWF	SUediff+2
 	MOVWF	SUediff+1
-	MOVWF	SUediff
+	MOVWF	SUediff+2
+	MOVWF	SUediff+3
 	BRA	TVcalcV
 ; Success
 AllGood:
@@ -2374,6 +2388,19 @@ FreqErr:
 ; Results of the test are stored in one of two locations, depending on
 ; if the oscillator is running fast (>10MHz) or slow (<10MHz). If
 ; detail logging is enabled, the result is logged
+	BTFSS	LogAdj ; logging details?
+	BRA	SUbegin
+; log the change
+	CALL    PrintP ; 
+	data    ControlV ; "Control \x00"
+	CALL    Push3U
+	data    PWM
+	CALL    CV2BCD ; control volts to decimal
+	MOVLW   0x67 ; 7 digits, 6 decimal places
+	CALL    PrintDec ; print the control volts
+	MOVLW	'V'
+	CALL	PrintC
+SUbegin:
 	CALL	ResetDly
 ;    BANKSEL SUtime1
         CALL    Push2U ; fetch TMR1 at start
@@ -2487,15 +2514,8 @@ CalMess:
 	BTFSS	LogAdj ; logging details?
 	RETURN
 ; log the change
-	CALL    PrintP ; 
-	data    ControlV ; "Control \x00"
-	CALL    Push3U
-	data    PWM
-	CALL    CV2BCD ; control volts to decimal
-	MOVLW   0x67 ; 7 digits, 6 decimal places
-	CALL    PrintDec ; print the control volts
 	CALL    PrintP
-	data    CVandErr ; "V Error=\x00"
+	data    CVandErr ; " Error=\x00"
 	CALL    FE2BCD ; frequency error to decimal
 	MOVLW   0x36 ; print 6 digits, 3 dec places
 	CALL    PrintDec ; print the error    
@@ -4536,11 +4556,11 @@ loop02:
 ;#################################################################
 ;               F I X E D   D A T A   I N   F L A S H
 ;#################################################################
-Announce:   da	"\r\nGPSDO Created 2023-01-08\x00"
+Announce:   da	"\r\nGPSDO Created 2023-03-05\x00"
 BadAT:	    da	" ?unknown\x00"
 CalFinish:  da	"Calibration saved successfully\x00"
 ControlV:   da	" Ctrl \x00"
-CVandErr:   da	"V Err=\x00"
+CVandErr:   da	" Err=\x00"
 CVandSlope: da	"V Sensitivity \x00"
 GPSvalid:   da	"\r\nGPS data is now valid.\x00"
 HzAndOver:  da	"Hz over \x00"
