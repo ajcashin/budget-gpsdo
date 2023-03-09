@@ -37,3 +37,6 @@ Notes: The schematic (and therefore the PCB) has a few optional bits.
 2. There is provision for a precision regulator to supply 5V to the FET pair that generate the control voltage. It and associated components can be left out, a wire link can get the 5V from the OCXO regulator, with only a slight (hard to measure) degradation of performance.
 3. There is provision to acquire the NMEA data and 1pps from a remotely located GPS module via a line driver/receiver pair. This has been tested to 20 metres, but most people will get satisfactory results plugging the GPS unit into the PCB. In the testing, a socket was installed for the line receiver (a UA9639). Pulling the IC allowed the GPS to be plugged in directly without removing other components.
 4. Use of optocouplers is not strictly necessary but does ensure no earth loops with whatever is connected to the GPSDO.
+
+Update:
+2023-03-09 - Main.asm -  changed the code for calibration to fix some convergence issues (only occurred sometimes).
