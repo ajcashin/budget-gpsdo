@@ -4,8 +4,6 @@
 
 Provable 10MHz±0.01Hz (or better) into 50Ω at low cost 
 
-NOTE: I haven't figured how to run GitHub properly. Look at the latest release for most recent updates. 
-
 Files:
 Main.asm - the software written in PIC assembler. Read SettingUpMPLAB.pdf to create the .hex file.
 
@@ -26,4 +24,4 @@ Notes: The schematic (and therefore the PCB) has a few optional bits.
 4. Use of optocouplers is not strictly necessary but does ensure no earth loops with whatever is connected to the GPSDO.
 
 Latest Update:
-2023-04-13 - Latest source, hex, notes in Release V1.2
+2023-04-13 - Latest source, hex, notes in Release V1.2 *** Out of date - see SourceForge for latest ***
