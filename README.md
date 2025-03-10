@@ -1,4 +1,7 @@
 # budget-gpsdo
+
+*** BECAUSE I HAVEN'T LEARNED TO USE GitHub EFFECTIVELY, LATEST INFORMATION IS AT https://sourceforge.net/projects/minimal-gpsdo/ ***
+
 Provable 10MHz±0.01Hz (or better) into 50Ω at low cost 
 
 NOTE: I haven't figured how to run GitHub properly. Look at the latest release for most recent updates. 
